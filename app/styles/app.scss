@@ -1,0 +1,23 @@
+// @use 'tim';
+
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  .navbar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+
+    .nav-link {
+      color: #fff !important;
+      &:hover {
+        color: #ffc107 !important;
+      }
+      &.active {
+        font-weight: bold;
+        color: #ffc107 !important;
+      }
+    }
+  }
+}
