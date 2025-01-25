@@ -28,7 +28,19 @@ export default class AnggotaController extends Controller {
 
     try {
       const response = await fetchApi(`/anggota/getByTim/${timId}`);
-      this.anggotaTim = response.data;
+
+      const validAnggota = response.data.filter(
+        (anggota) => anggota.tim_id === timId
+      );
+
+      if (validAnggota.length !== response.data.length) {
+        console.warn(
+          'Beberapa anggota tidak sesuai dengan timId yang dipilih dan telah difilter.'
+        );
+      }
+
+      this.anggotaTim = validAnggota;
+      this.filteredAnggota = validAnggota;
     } catch (error) {
       console.error('Error fetching anggota tim:', error);
       Swal.fire({

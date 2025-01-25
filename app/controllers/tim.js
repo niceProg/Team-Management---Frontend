@@ -14,19 +14,11 @@ export default class TimController extends Controller {
   @tracked searchQuery = '';
   @tracked filteredTim = this.model;
 
-  @action
-  searchTim(event) {
-    const query = event.target.value.toLowerCase();
-    this.searchQuery = query;
-    this.filteredTim = this.model.filter((tim) =>
-      tim.nama.toLowerCase().includes(query)
-    );
-  }
-
   async loadTim() {
     try {
       const response = await fetchApi('/tim/getAll');
       this.model = response.data;
+      this.filteredTim = this.model;
     } catch (error) {
       console.error('Error loading tim:', error);
       Swal.fire({
@@ -35,6 +27,15 @@ export default class TimController extends Controller {
         text: 'Gagal memuat data tim.',
       });
     }
+  }
+
+  @action
+  searchTim(event) {
+    const query = event.target.value.toLowerCase();
+    this.searchQuery = query;
+    this.filteredTim = this.model.filter((tim) =>
+      tim.nama.toLowerCase().includes(query)
+    );
   }
 
   @action
@@ -88,6 +89,7 @@ export default class TimController extends Controller {
       this.currentTim = { nama: '', deskripsi: '' };
     } catch (error) {
       console.error('Error creating tim:', error);
+
       Swal.fire({
         icon: 'error',
         title: 'Gagal!',
