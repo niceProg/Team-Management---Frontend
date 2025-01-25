@@ -5,11 +5,11 @@ import fetchApi from '../utils/fetch-api';
 import Swal from 'sweetalert2';
 
 export default class AnggotaController extends Controller {
-  @tracked anggotaTim = []; // Data anggota tim
-  @tracked selectedTimName = ''; // Nama tim yang sedang dilihat
-  @tracked selectedTimId = ''; // ID tim yang sedang dilihat
-  @tracked searchQuery = ''; // Pencarian
-  @tracked filteredAnggota = this.anggotaTim; // Data yang ditampilkan
+  @tracked anggotaTim = [];
+  @tracked selectedTimName = '';
+  @tracked selectedTimId = '';
+  @tracked searchQuery = '';
+  @tracked filteredAnggota = this.anggotaTim;
 
   @action
   searchAnggota(event) {
@@ -23,12 +23,12 @@ export default class AnggotaController extends Controller {
   currentAnggota = { nama: '', peran: '', timId: '' };
 
   async loadAnggotaTim(timId, timName) {
-    this.selectedTimId = timId; // Simpan timId dari route
-    this.selectedTimName = timName; // Simpan timName dari route
+    this.selectedTimId = timId;
+    this.selectedTimName = timName;
 
     try {
       const response = await fetchApi(`/anggota/getByTim/${timId}`);
-      this.anggotaTim = response.data; // Data anggota dari API
+      this.anggotaTim = response.data;
     } catch (error) {
       console.error('Error fetching anggota tim:', error);
       Swal.fire({
@@ -41,7 +41,7 @@ export default class AnggotaController extends Controller {
 
   @action
   goBack() {
-    this.transitionToRoute('tim'); // Kembali ke daftar tim
+    this.transitionToRoute('tim');
   }
 
   @action
@@ -51,14 +51,12 @@ export default class AnggotaController extends Controller {
 
   @action
   openAddAnggotaModal() {
-    // Tim ID otomatis diambil dari selectedTimId
     this.currentAnggota = {
       nama: '',
       peran: '',
-      timId: this.selectedTimId, // ID tim otomatis sesuai route
+      timId: this.selectedTimId,
     };
 
-    // Buka modal menggunakan Bootstrap
     const modal = new bootstrap.Modal(
       document.getElementById('addAnggotaModal')
     );
@@ -69,11 +67,8 @@ export default class AnggotaController extends Controller {
   async submitAddAnggota(event) {
     event.preventDefault();
 
-    //     console.log('Data sebelum dikirim:', this.currentAnggota);
-
     const { nama, peran, timId } = this.currentAnggota;
 
-    // Validasi input
     if (!nama || !peran || !timId) {
       Swal.fire({
         icon: 'warning',
@@ -83,11 +78,10 @@ export default class AnggotaController extends Controller {
       return;
     }
 
-    // Pastikan format data yang dikirim sesuai dengan backend
     const newAnggota = {
       nama,
       peran,
-      tim_id: timId, // Ubah dari timId (camelCase) ke tim_id (snake_case)
+      tim_id: timId,
     };
 
     try {
@@ -97,17 +91,14 @@ export default class AnggotaController extends Controller {
         body: JSON.stringify(newAnggota),
       });
 
-      // Tambahkan anggota baru ke daftar anggota jika berhasil
       this.anggotaTim.pushObject(response.data);
 
-      // Reset form
       this.set('currentAnggota', {
         nama: '',
         peran: '',
         timId: this.selectedTimId,
       });
 
-      // Tutup modal
       const modalElement = document.getElementById('addAnggotaModal');
       const modalInstance = bootstrap.Modal.getInstance(modalElement);
       if (modalInstance) {
@@ -131,10 +122,8 @@ export default class AnggotaController extends Controller {
 
   @action
   openEditAnggotaModal(anggota) {
-    // Isi `currentAnggota` dengan data anggota yang akan diupdate
     this.currentAnggota = { ...anggota };
 
-    // Buka modal menggunakan Bootstrap
     const modal = new bootstrap.Modal(
       document.getElementById('editAnggotaModal')
     );
@@ -145,8 +134,6 @@ export default class AnggotaController extends Controller {
   async submitEditAnggota(event) {
     event.preventDefault();
 
-    //     console.log('Data sebelum diupdate:', this.currentAnggota);
-
     try {
       await fetchApi(`/anggota/update/${this.currentAnggota.id}`, {
         method: 'PUT',
@@ -154,10 +141,8 @@ export default class AnggotaController extends Controller {
         body: JSON.stringify(this.currentAnggota),
       });
 
-      // Refresh data tabel
       await this.loadAnggotaTim(this.selectedTimId, this.selectedTimName);
 
-      // Tutup modal
       const modal = bootstrap.Modal.getInstance(
         document.getElementById('editAnggotaModal')
       );
@@ -180,10 +165,8 @@ export default class AnggotaController extends Controller {
 
   @action
   async confirmDeleteAnggota(anggota) {
-    // Simpan anggota yang akan dihapus untuk konfirmasi
     this.currentAnggota = anggota;
 
-    // Buka modal konfirmasi menggunakan Bootstrap
     const modal = new bootstrap.Modal(
       document.getElementById('deleteAnggotaModal')
     );
@@ -199,10 +182,8 @@ export default class AnggotaController extends Controller {
         method: 'DELETE',
       });
 
-      // Reload tabel anggota setelah berhasil dihapus
       await this.loadAnggotaTim(this.selectedTimId, this.selectedTimName);
 
-      // Tutup modal konfirmasi
       const modal = bootstrap.Modal.getInstance(
         document.getElementById('deleteAnggotaModal')
       );

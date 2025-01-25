@@ -1,26 +1,21 @@
-<!-- Header -->
 <div class='header d-flex justify-content-between align-items-center mb-4'>
   <h1 class='header-title'>Daftar Anggota: {{this.selectedTimName}}</h1>
   <div class='d-flex gap-3'>
-    <!-- Input pencarian -->
     <input
       type='text'
       class='form-control'
       placeholder='Cari nama anggota...'
       {{on 'input' this.searchAnggota}}
     />
-    <!-- Tombol tambah anggota -->
     <button class='btn btn-primary' {{on 'click' this.openAddAnggotaModal}}>
       Tambah Anggota
     </button>
-    <!-- Tombol kembali -->
     <button class='btn btn-secondary' {{on 'click' (fn this.goBack)}}>
       Kembali
     </button>
   </div>
 </div>
 
-<!-- Tabel -->
 <div class='table-responsive'>
   <table class='table table-striped table-bordered'>
     <thead class='table-dark'>
@@ -64,7 +59,6 @@
   </table>
 </div>
 
-<!-- Modal Tambah Anggota -->
 <div
   class='modal fade'
   id='addAnggotaModal'
@@ -85,16 +79,6 @@
       </div>
       <div class='modal-body'>
         <form {{on 'submit' this.submitAddAnggota}}>
-          {{!-- <div class='mb-3'>
-            <label for='tim-id' class='form-label'>Tim ID (Otomatis)</label>
-            <input
-              id='tim-id'
-              class='form-control'
-              type='text'
-              value={{this.currentAnggota.timId}}
-              readonly
-            />
-          </div> --}}
           <div class='mb-3'>
             <label for='nama' class='form-label'>Nama</label>
             <input
@@ -125,7 +109,6 @@
   </div>
 </div>
 
-<!-- Modal Edit Anggota -->
 <div
   class='modal fade'
   id='editAnggotaModal'

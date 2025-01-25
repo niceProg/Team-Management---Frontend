@@ -6,13 +6,13 @@ import Swal from 'sweetalert2';
 import { tracked } from '@glimmer/tracking';
 
 export default class TimController extends Controller {
-  @service router; // Gunakan router service untuk navigasi
-  @tracked model = []; // Data tabel tim
+  @service router;
+  @tracked model = [];
   @tracked selectedTimId = null;
   @tracked selectedTimName = '';
-  @tracked currentTim = { nama: '', deskripsi: '' }; // Data tim untuk form
-  @tracked searchQuery = ''; // Pencarian
-  @tracked filteredTim = this.model; // Data yang ditampilkan
+  @tracked currentTim = { nama: '', deskripsi: '' };
+  @tracked searchQuery = '';
+  @tracked filteredTim = this.model;
 
   @action
   searchTim(event) {
@@ -23,11 +23,10 @@ export default class TimController extends Controller {
     );
   }
 
-  // Memuat data tim dari API
   async loadTim() {
     try {
-      const response = await fetchApi('/tim/getAll'); // Endpoint untuk mendapatkan semua tim
-      this.model = response.data; // Perbarui data tabel
+      const response = await fetchApi('/tim/getAll');
+      this.model = response.data;
     } catch (error) {
       console.error('Error loading tim:', error);
       Swal.fire({
@@ -38,7 +37,6 @@ export default class TimController extends Controller {
     }
   }
 
-  // Navigasi ke halaman anggota berdasarkan timId
   @action
   selectTimForAnggota(timId, timName) {
     this.selectedTimId = timId;
@@ -46,15 +44,13 @@ export default class TimController extends Controller {
     this.transitionToRoute('anggota', timId);
   }
 
-  // Buka modal tambah tim
   @action
   openAddTimModal() {
-    this.currentTim = { nama: '', deskripsi: '' }; // Reset data form
-    const modal = new bootstrap.Modal(document.getElementById('addTimModal')); // Bootstrap modal
+    this.currentTim = { nama: '', deskripsi: '' };
+    const modal = new bootstrap.Modal(document.getElementById('addTimModal'));
     modal.show();
   }
 
-  // Submit form tambah tim
   @action
   async submitAddTim(event) {
     event.preventDefault();
@@ -82,16 +78,13 @@ export default class TimController extends Controller {
         text: 'Tim berhasil ditambahkan!',
       });
 
-      // Muat ulang tabel
       await this.loadTim();
 
-      // Tutup modal
       const modal = bootstrap.Modal.getInstance(
         document.getElementById('addTimModal')
       );
       if (modal) modal.hide();
 
-      // Reset form
       this.currentTim = { nama: '', deskripsi: '' };
     } catch (error) {
       console.error('Error creating tim:', error);
@@ -103,15 +96,13 @@ export default class TimController extends Controller {
     }
   }
 
-  // Buka modal edit tim
   @action
   openEditTimModal(tim) {
-    this.currentTim = { ...tim }; // Set data tim yang ingin diedit
+    this.currentTim = { ...tim };
     const modal = new bootstrap.Modal(document.getElementById('editTimModal'));
     modal.show();
   }
 
-  // Submit form edit tim
   @action
   async submitEditTim(event) {
     event.preventDefault();
@@ -130,10 +121,8 @@ export default class TimController extends Controller {
         text: 'Data tim berhasil diperbarui!',
       });
 
-      // Muat ulang tabel
       await this.loadTim();
 
-      // Tutup modal
       const modal = bootstrap.Modal.getInstance(
         document.getElementById('editTimModal')
       );
@@ -148,7 +137,6 @@ export default class TimController extends Controller {
     }
   }
 
-  // Hapus tim
   @action
   async deleteTim(timId) {
     if (!timId) {
@@ -181,7 +169,6 @@ export default class TimController extends Controller {
           text: 'Tim berhasil dihapus.',
         });
 
-        // Muat ulang tabel
         await this.loadTim();
       } catch (error) {
         console.error('Error deleting tim:', error);
@@ -194,7 +181,6 @@ export default class TimController extends Controller {
     }
   }
 
-  // Panggil metode loadTim saat controller diinisialisasi
   constructor() {
     super(...arguments);
     this.loadTim();
